@@ -48,6 +48,7 @@
     <string name="where">Where:</string>
     <string name="sort_by">Sort by:</string>
     <string name="limit">Limit:</string>
+    <string name="append">Append:</string>
     <string name="dash">-</string>
 
 </resources>

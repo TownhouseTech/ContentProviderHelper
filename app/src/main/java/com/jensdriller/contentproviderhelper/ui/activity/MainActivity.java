@@ -7,9 +7,14 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Telephony;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +41,12 @@ import com.jensdriller.contentproviderhelper.ui.dialog.ProgressDialogFragment;
 import com.jensdriller.contentproviderhelper.ui.dialog.ProgressDialogFragment.SimpleListener;
 import com.jensdriller.contentproviderhelper.ui.dialog.QueryWithFilterDialog;
 
+import static android.Manifest.permission.*;
+
 public class MainActivity extends BaseActivity implements OnClickListener, OnItemClickListener, AddProviderDialog.Contract, DeleteProviderDialog.Contract, ExceptionListener {
+
+	private static final int PERMISSION_REQUEST_CODE = 1;
+	private static final int DEFAULT_MESSENGER_REQUEST_CODE = 2;
 
 	private static final String BUNDLE_COLUMNS = "columns";
 	private static final String TAG_LOAD_COLUMNS_DIALOG = "loadColumnsDialog";
@@ -150,6 +160,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnIte
 				setColumnData(columnsResult);
 			}
 		}
+
+		getPermissions();
 	}
 
 	@Override
@@ -225,6 +237,11 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnIte
 	}
 
 	private void loadColumns(Uri uri) {
+		String uriString = uri.toString();
+		if (uriString.endsWith("=")) {
+			uri = Uri.parse(uriString.concat("test"));
+		}
+
 		LoadColumnsTask loadColumnsTask = new LoadColumnsTask(MainActivity.this);
 		loadColumnsTask.setExceptionListener(MainActivity.this);
 		loadColumnsTask.execute(uri);
@@ -363,6 +380,90 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnIte
 	public void onException(Exception e) {
 		mTxtColumnCount.setText("-");
 		mTxtRowCount.setText("-");
+	}
+
+	private void getPermissions() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+			return;
+
+		boolean readPhoneState = ContextCompat.checkSelfPermission(mContext,
+				READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
+		boolean callPhone = ContextCompat.checkSelfPermission(mContext,
+				CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+		boolean readContacts = ContextCompat.checkSelfPermission(mContext,
+				READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+		boolean readSMS = ContextCompat.checkSelfPermission(mContext,
+				READ_SMS) == PackageManager.PERMISSION_GRANTED;
+		boolean sendSMS = ContextCompat.checkSelfPermission(mContext,
+				SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+
+		if (!(readSMS && sendSMS && readContacts && readPhoneState && callPhone)) {
+			ActivityCompat.requestPermissions(this,
+					new String[]{READ_PHONE_STATE, CALL_PHONE, READ_CONTACTS, READ_SMS, SEND_SMS},
+					PERMISSION_REQUEST_CODE);
+		}
+	}
+
+	private void askToBeDefault() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+			return;
+		}
+
+		if (getBaseContext().getPackageName().equals(Telephony.Sms.getDefaultSmsPackage(getBaseContext()))) {
+			return;
+		}
+
+		//ask to be default
+		Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+		intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
+		startActivityForResult(intent, DEFAULT_MESSENGER_REQUEST_CODE);
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+										   @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+		boolean readPhoneState = false,
+				callPhone = false,
+				readContacts = false,
+				readSMS = false,
+				sendSMS = false;
+
+		if (requestCode == PERMISSION_REQUEST_CODE) {
+			for (int i = 0; i < grantResults.length; i++) {
+				if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+					switch (permissions[i]) {
+						case READ_PHONE_STATE:
+							readPhoneState = true;
+							break;
+						case CALL_PHONE:
+							callPhone = true;
+							break;
+						case READ_CONTACTS:
+							readContacts = true;
+							break;
+						case READ_SMS:
+							readSMS = true;
+							break;
+						case SEND_SMS:
+							sendSMS = true;
+							break;
+					}
+				}
+			}
+		}
+
+		if (readPhoneState && callPhone && readContacts && readSMS && sendSMS) {
+			askToBeDefault();
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode != DEFAULT_MESSENGER_REQUEST_CODE) {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
 	}
 
 }

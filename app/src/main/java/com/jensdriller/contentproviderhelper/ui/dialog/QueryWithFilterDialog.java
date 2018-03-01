@@ -53,6 +53,7 @@ public class QueryWithFilterDialog extends DialogFragment {
 		final Spinner spinnerSortByColumns = (Spinner) view.findViewById(R.id.spinner_sort_by_column);
 		final Spinner spinnerSortByOrder = (Spinner) view.findViewById(R.id.spinner_sort_by_order);
 		final EditText txtLimit = (EditText) view.findViewById(R.id.limit);
+		final EditText txtAppend = (EditText) view.findViewById(R.id.append);
 
 		List<Column> columns = columnList.getColumns();
 		SpinnerAdapter columnsAdapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, columns);
@@ -78,14 +79,19 @@ public class QueryWithFilterDialog extends DialogFragment {
 						}
 
 						String sortByColumn = spinnerSortByColumns.getSelectedItem().toString();
-						if (!TextUtils.isEmpty(sortByColumn)) {
-							String sortByOrder = spinnerSortByOrder.getSelectedItem().toString();
+						String sortByOrder = spinnerSortByOrder.getSelectedItem().toString();
+						if (!TextUtils.isEmpty(sortByColumn) && !TextUtils.isEmpty(sortByOrder)) {
 							intent.putExtra(ResultActivity.INTENT_EXTRA_SORT_BY, sortByColumn + " " + sortByOrder);
 						}
 
 						String limit = txtLimit.getText().toString();
 						if (!TextUtils.isEmpty(limit)) {
 							intent.putExtra(ResultActivity.INTENT_EXTRA_LIMIT, limit);
+						}
+
+						String append = txtAppend.getText().toString();
+						if (!TextUtils.isEmpty(append)) {
+							intent.putExtra(ResultActivity.INTENT_EXTRA_APPEND, append);
 						}
 
 						startActivity(intent);

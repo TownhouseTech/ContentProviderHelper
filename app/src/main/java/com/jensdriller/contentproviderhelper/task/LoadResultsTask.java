@@ -44,10 +44,13 @@ public class LoadResultsTask extends DialogAsyncTask<Uri, Void, Result> {
 		Cursor cursor = null;
 
 		try {
-			int len = mColumnList.size();
-			String[] projection = new String[len];
-			for (int i = 0; i < len; i++) {
-				projection[i] = mColumnList.get(i).getName();
+			String[] projection = null;
+			if (mColumnList != null) {
+				int len = mColumnList.size();
+				projection = new String[len];
+				for (int i = 0; i < len; i++) {
+					projection[i] = mColumnList.get(i).getName();
+				}
 			}
 			cursor = mContext.getContentResolver().query(params[0], projection, mSqlParams.where, null, mSqlParams.sortBy);
 			if (cursor.moveToFirst()) {

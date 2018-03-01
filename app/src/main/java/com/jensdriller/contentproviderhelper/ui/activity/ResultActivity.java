@@ -30,6 +30,7 @@ public class ResultActivity extends BaseActivity implements ExceptionListener {
 	public static final String INTENT_EXTRA_WHERE = "where";
 	public static final String INTENT_EXTRA_LIMIT = "limit";
 	public static final String INTENT_EXTRA_SORT_BY = "sortBy";
+	public static final String INTENT_EXTRA_APPEND = "append";
 
 	private static final String BUNDLE_RESULT = "result";
 	private static final String MIME_TYPE = "text/html";
@@ -72,6 +73,10 @@ public class ResultActivity extends BaseActivity implements ExceptionListener {
 
 		Intent intent = getIntent();
 		String uri = intent.getStringExtra(INTENT_EXTRA_URI);
+		String append = intent.getStringExtra(INTENT_EXTRA_APPEND);
+		if (append != null) {
+			uri = uri.concat(append);
+		}
 		txtContentProvider.setText(uri);
 
 		String where = intent.getStringExtra(INTENT_EXTRA_WHERE);

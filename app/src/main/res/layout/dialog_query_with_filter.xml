@@ -7,7 +7,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp" >
 
         <TextView
             android:id="@+id/where_label"
@@ -21,26 +22,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/where_label"
-            android:layout_toRightOf="@id/where_label" />
+            android:layout_toRightOf="@id/where_label"
+            android:background="#eeeeee" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp" >
 
         <Spinner
             android:id="@+id/spinner_where_operator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:entries="@array/where_clause" />
+            android:entries="@array/where_clause"
+            android:background="#eeeeee" />
 
         <EditText
             android:id="@+id/equals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/spinner_where_operator"
             android:layout_toRightOf="@id/spinner_where_operator"
+            android:background="#eeeeee"
             android:inputType="text" />
 
         <TextView
@@ -55,7 +59,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" >
+        android:paddingBottom="10dp"  >
 
         <TextView
             android:id="@+id/sort_by_label"
@@ -70,7 +74,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/sort_by_label"
             android:layout_toLeftOf="@+id/spinner_sort_by_order"
-            android:layout_toRightOf="@id/sort_by_label" />
+            android:layout_toRightOf="@id/sort_by_label"
+            android:background="#eeeeee" />
 
         <Spinner
             android:id="@id/spinner_sort_by_order"
@@ -78,12 +83,14 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/sort_by_label"
             android:layout_alignParentRight="true"
-            android:entries="@array/sort_by_order" />
+            android:entries="@array/sort_by_order"
+            android:background="#eeeeee" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp" >
 
         <TextView
             android:id="@+id/limit_label"
@@ -96,9 +103,30 @@
             android:id="@+id/limit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/limit_label"
             android:layout_toRightOf="@id/limit_label"
+            android:background="#eeeeee"
             android:inputType="number" />
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp" >
+
+        <TextView
+                android:id="@+id/append_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="@string/append" />
+
+        <EditText
+                android:id="@+id/append"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/append_label"
+                android:background="#eeeeee"
+                android:inputType="text" />
     </RelativeLayout>
 
 </LinearLayout>

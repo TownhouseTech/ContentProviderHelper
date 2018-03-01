@@ -45,7 +45,20 @@ public class ColumnList implements Parcelable {
 		return false;
 	}
 
+	public boolean areAllColumnChecked() {
+		for (Column column : mColumns) {
+			if (!column.isChecked()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public ColumnList getCheckedColumns() {
+		if (areAllColumnChecked()) {
+			return null;
+		}
+
 		ColumnList checkedColumns = new ColumnList();
 		for (Column column : mColumns) {
 			if (column.isChecked()) {
