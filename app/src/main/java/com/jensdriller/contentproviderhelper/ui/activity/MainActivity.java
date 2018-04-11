@@ -160,7 +160,11 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnIte
 				setColumnData(columnsResult);
 			}
 		}
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
 		getPermissions();
 	}
 
@@ -401,6 +405,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnIte
 			ActivityCompat.requestPermissions(this,
 					new String[]{READ_PHONE_STATE, CALL_PHONE, READ_CONTACTS, READ_SMS, SEND_SMS},
 					PERMISSION_REQUEST_CODE);
+		} else {
+			askToBeDefault();
 		}
 	}
 
